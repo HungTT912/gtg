@@ -19,11 +19,13 @@ if __name__ == '__main__':
     parser.add_argument("--n_traj", type=int, default=1000)
 
     args = parser.parse_args()
-    args.data_path = f'generated_datasets/{args.task}_frac{args.frac}_sigma{args.sigma}/{args.n_traj}x{args.horizon}_k{args.k}_eps{args.eps}_train.p'
-    RUN.prefix = f"trained_models/{args.task}_frac{args.frac}_sigma{args.sigma}/{args.n_traj}x{args.horizon}_k{args.k}_eps{args.eps}/seed{args.seed}/"
-    
-    logger.print(RUN.prefix, color='green')
-    jaynes.config("local")
-    thunk = instr(main, **vars(args))
-    jaynes.run(thunk)
+    for seed in range(8):
+        args.seed = seed 
+        args.data_path = f'generated_datasets/{args.task}_frac{args.frac}_sigma{args.sigma}/{args.n_traj}x{args.horizon}_k{args.k}_eps{args.eps}_train.p'
+        RUN.prefix = f"trained_models/{args.task}_frac{args.frac}_sigma{args.sigma}/{args.n_traj}x{args.horizon}_k{args.k}_eps{args.eps}/seed{args.seed}/"
+        
+        logger.print(RUN.prefix, color='green')
+        jaynes.config("local")
+        thunk = instr(main, **vars(args))
+        jaynes.run(thunk)
     
