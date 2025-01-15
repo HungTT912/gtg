@@ -223,8 +223,10 @@ def evaluate(**deps):
     logger.print(f"max_ep_reward: {np.max(y)}, median_ep_reward: {np.median(y)}, mean_ep_reward: {np.mean(y)},", color='green')
     logger.log_metrics_summary({f"max_ep_reward": np.max(y), "median_ep_reward": np.median(y), "mean_ep_reward": np.mean(y)})
     
-    logger.print(f"nmax_ep_reward: {np.max(y_norm)}, nmedian_ep_reward: {np.median(y_norm)}, nmean_ep_reward: {np.mean(y_norm)},", color='green')
+    percentile_80 = np.percentile(y_norm, 80, interpolation='nearest')
+    logger.print(f"nmax_ep_reward: {np.max(y_norm)}, 80th_percentile: {percentile_80}, nmedian_ep_reward: {np.median(y_norm)}, nmean_ep_reward: {np.mean(y_norm)},", color='green')
     logger.log_metrics_summary({f"nmax_ep_reward": np.max(y_norm), "nmedian_ep_reward": np.median(y_norm), "nmean_ep_reward": np.mean(y_norm)})
     
     np.savez_compressed(os.path.join(logger.prefix, f'performance_{Config.n_train_steps}_{trainer.batch_size}x{Config.horizon - context_length}_alpha{Config.alpha}'), y=y, y_norm=y_norm, time=time)
     np.savez_compressed(os.path.join(logger.prefix, f'samples_{Config.n_train_steps}_{trainer.batch_size}x{Config.horizon - context_length}_alpha{Config.alpha}'), queries=queries)
+    # return np.max(y_norm), percentile_80, np.median(y_norm)
